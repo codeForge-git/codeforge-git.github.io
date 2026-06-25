@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>codeForge — Zürich</title>
+  <meta name="description" content="Answering hard questions, solving big problems. Custom software, AI, embedded systems and research. Two engineers based in Zürich, Switzerland.">
+  <meta property="og:title" content="codeForge">
+  <meta property="og:description" content="Answering hard questions, solving big problems">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>›</text></svg>">
+  <style>
+    /* ---- DESIGN TOKENS ---- */
+    :root {
+      --cf-accent: #1FD17A;
+      --cf-accent-ink: #0CA15F;
+      --cf-accent-soft: rgba(31, 209, 122, 0.12);
+      --cf-on-accent-dark: #06231A;
+      --cf-on-accent-light: #FFFFFF;
+      --cf-d-canvas: #0A0A0A;
+      --cf-d-surface: #0D0D0D;
+      --cf-d-surface-2: #111111;
+      --cf-d-hairline: #161616;
+      --cf-d-border: #1F1F1F;
+      --cf-d-border-strong: #262626;
+      --cf-d-muted: #737373;
+      --cf-d-secondary: #A1A1A1;
+      --cf-d-primary: #EDEDED;
+      --cf-d-faint: #5E5E5E;
+      --cf-l-canvas: #FFFFFF;
+      --cf-l-surface: #FAFAFA;
+      --cf-l-surface-2: #F4F4F4;
+      --cf-l-hairline: #ECECEC;
+      --cf-l-border: #E4E4E4;
+      --cf-l-border-strong: #D8D8D8;
+      --cf-l-muted: #8F8F8F;
+      --cf-l-secondary: #525252;
+      --cf-l-primary: #0A0A0A;
+      --cf-l-faint: #A8A8A8;
+      /* Semantic aliases — default: dark */
+      --bg: var(--cf-d-canvas);
+      --surface: var(--cf-d-surface);
+      --surface-2: var(--cf-d-surface-2);
+      --hairline: var(--cf-d-hairline);
+      --border: var(--cf-d-border);
+      --border-strong: var(--cf-d-border-strong);
+      --text: var(--cf-d-primary);
+      --text-2: var(--cf-d-secondary);
+      --text-3: var(--cf-d-muted);
+      --text-4: var(--cf-d-faint);
+      --accent: var(--cf-accent);
+      --accent-soft: var(--cf-accent-soft);
+      --on-accent: var(--cf-on-accent-dark);
+      --grid-line: rgba(255, 255, 255, 0.05);
+      /* Typography */
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      /* Shape */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+      --radius-pill: 999px;
+      --ease: cubic-bezier(0.2, 0, 0, 1);
+    }
+    [data-theme="light"] {
+      --bg: var(--cf-l-canvas);
+      --surface: var(--cf-l-surface);
+      --surface-2: var(--cf-l-surface-2);
+      --hairline: var(--cf-l-hairline);
+      --border: var(--cf-l-border);
+      --border-strong: var(--cf-l-border-strong);
+      --text: var(--cf-l-primary);
+      --text-2: var(--cf-l-secondary);
+      --text-3: var(--cf-l-muted);
+      --text-4: var(--cf-l-faint);
+      --accent: var(--cf-accent-ink);
+      --on-accent: var(--cf-on-accent-light);
+      --grid-line: rgba(10, 10, 10, 0.065);
+    }
+
+    /* ---- RESET ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    button { cursor: pointer; font: inherit; }
+    ::selection { background: var(--accent-soft); }
+
+    /* ---- BASE ---- */
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      transition: background 240ms var(--ease), color 240ms var(--ease);
+    }
+
+    @keyframes cfblink {
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
+    }
+
+    /* ---- TAG ---- */
+    .cf-tag {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-2);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+    }
+
+    /* ---- BUTTONS ---- */
+    .cf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 40px;
+      padding: 0 18px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: opacity 160ms var(--ease), border-color 160ms var(--ease);
+    }
+    .cf-btn-primary {
+      background: var(--accent);
+      color: var(--on-accent);
+    }
+    .cf-btn-primary:hover { opacity: 0.88; }
+    .cf-btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+    .cf-btn-secondary:hover { border-color: var(--accent); }
+
+    /* ---- CARD ---- */
+    .cf-card {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--surface-2);
+      padding: 22px 24px;
+    }
+    .cf-card-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .cf-card-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .cf-card-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-3);
+    }
+
+    /* ---- TERMINAL ---- */
+    .cf-terminal {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--surface-2);
+      overflow: hidden;
+    }
+    .cf-terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .cf-terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border-strong);
+    }
+    .cf-terminal-title {
+      flex: 1;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-4);
+    }
+    .cf-terminal-body {
+      padding: 16px 18px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .cf-cursor {
+      display: inline-block;
+      width: 9px;
+      height: 17px;
+      background: var(--accent);
+      margin-left: 8px;
+      transform: translateY(3px);
+      animation: cfblink 1.1s steps(1) infinite;
+    }
+
+    /* ---- NAV ---- */
+    .cf-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--hairline);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .cf-navinner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cf-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .cf-navlinks {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .cf-navlink {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-3);
+      letter-spacing: 0.02em;
+      transition: color 160ms var(--ease);
+    }
+    .cf-navlink:hover { color: var(--text); }
+    .cf-theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-2);
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 7px 11px;
+      transition: border-color 160ms var(--ease);
+    }
+    .cf-theme-btn:hover { border-color: var(--accent); }
+
+    /* ---- HERO ---- */
+    .cf-hero-wrap {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .cf-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px;
+      -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, #000 25%, transparent 78%);
+      mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, #000 25%, transparent 78%);
+      pointer-events: none;
+    }
+    .cf-hero {
+      position: relative;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 96px 48px 88px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 56px;
+      align-items: center;
+    }
+    .cf-hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .cf-hero-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .cf-hero h1 {
+      margin: 22px 0 0;
+      font-weight: 600;
+      font-size: clamp(58px, 7vw, 92px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .cf-hero-sub {
+      margin: 26px 0 0;
+      max-width: 470px;
+      font-size: 21px;
+      line-height: 1.45;
+      color: var(--text-2);
+      letter-spacing: -0.01em;
+    }
+    .cf-hero-tags { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 28px; }
+    .cf-hero-cta  { display: flex; gap: 12px; margin-top: 34px; }
+
+    /* ---- SECTIONS ---- */
+    .cf-section-wrap { border-bottom: 1px solid var(--hairline); }
+    .cf-section {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 96px 48px;
+    }
+    .cf-section-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .cf-section h2 {
+      margin: 14px 0 0;
+      font-size: 34px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+    .cf-section-desc {
+      margin: 12px 0 0;
+      max-width: 580px;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--text-3);
+    }
+    .cf-grid2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    /* Research card */
+    .cf-research-card {
+      grid-column: 1 / -1;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--surface-2);
+      padding: 26px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 18px;
+    }
+    .cf-research-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex: none;
+    }
+    .cf-research-body { flex: 1; min-width: 280px; }
+    .cf-research-title { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+    .cf-research-desc { margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--text-2); }
+
+    /* Stack */
+    .cf-stack-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 40px;
+    }
+    .cf-stack-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      margin-bottom: 16px;
+    }
+    .cf-tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* Founders */
+    .cf-founder-card {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--surface-2);
+      padding: 26px;
+    }
+    .cf-founder-head { display: flex; gap: 20px; align-items: center; }
+    .cf-founder-img {
+      width: 104px;
+      height: 104px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      object-position: center 28%;
+      filter: grayscale(1) contrast(1.04);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .cf-founder-name { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+    .cf-founder-role {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-3);
+      margin-top: 6px;
+    }
+    .cf-founder-bio { margin: 22px 0 0; font-size: 15px; line-height: 1.6; color: var(--text-2); }
+    .cf-founder-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .cf-founder-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--hairline); }
+    .cf-founder-section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-4);
+    }
+    .cf-trusted-by {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 22px;
+      margin-top: 14px;
+      color: var(--text-2);
+    }
+    .cf-founder-note {
+      margin-top: 14px;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text-3);
+      line-height: 1.55;
+    }
+
+    /* Contact */
+    .cf-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 36px;
+      max-width: 720px;
+    }
+    .cf-contact-main {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      background: var(--accent-soft);
+      transition: opacity 160ms var(--ease);
+    }
+    .cf-contact-main:hover { opacity: 0.88; }
+    .cf-contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      background: var(--surface-2);
+      transition: border-color 160ms var(--ease);
+    }
+    .cf-contact-item:hover { border-color: var(--accent); }
+    .cf-contact-name { display: block; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .cf-contact-email { font-family: var(--font-mono); font-size: 13px; color: var(--text-3); }
+    .cf-contact-main .cf-contact-name { font-size: 16px; }
+    .cf-contact-main .cf-contact-email { color: var(--accent); }
+    .cf-contact-arrow { color: var(--accent); font-family: var(--font-mono); }
+
+    /* Footer */
+    .cf-footer { border-top: 1px solid var(--hairline); }
+    .cf-footinner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 860px) {
+      .cf-navinner { padding: 0 22px; }
+      .cf-navlinks { gap: 18px; }
+      .cf-section { padding: 64px 22px; }
+      .cf-hero { grid-template-columns: 1fr; padding: 60px 22px 56px; gap: 36px; }
+      .cf-grid2 { grid-template-columns: 1fr; }
+      .cf-stack-grid { grid-template-columns: 1fr; gap: 32px; }
+      .cf-contact-grid { grid-template-columns: 1fr; }
+      .cf-contact-main { grid-column: auto; }
+      .cf-footinner { padding: 24px 22px; }
+    }
+    @media (max-width: 560px) {
+      .cf-navlink { display: none; }
+      .cf-hero h1 { font-size: 48px; }
+      .cf-section h2 { font-size: 28px; }
+      .cf-founder-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+    @media (max-width: 400px) {
+      .cf-hero h1 { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="cf-nav">
+    <div class="cf-navinner">
+      <a href="#top" class="cf-logo">
+        <span style="color: var(--accent);">›</span>
+        <span>cF</span>
+      </a>
+      <div class="cf-navlinks">
+        <a class="cf-navlink" href="#capabilities">capabilities</a>
+        <a class="cf-navlink" href="#stack">stack</a>
+        <a class="cf-navlink" href="#founders">founders</a>
+        <a class="cf-navlink" href="#contact">contact</a>
+        <button class="cf-theme-btn" id="themeToggle" aria-label="toggle theme">
+          <span style="color: var(--accent);">›</span>
+          <span id="themeLabel">light</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header id="top" class="cf-hero-wrap">
+    <div class="cf-grid-bg"></div>
+    <div class="cf-hero">
+      <div>
+        <div class="cf-hero-eyebrow">
+          <span class="cf-hero-dot"></span>
+          Zürich, Switzerland
+        </div>
+        <h1>
+          <span style="color: var(--accent); font-family: var(--font-mono); font-weight: 500;">›</span>
+          <span>codeForge</span>
+        </h1>
+        <p class="cf-hero-sub">Answering hard questions, solving big problems</p>
+        <div class="cf-hero-tags">
+          <span class="cf-tag">custom&nbsp;solutions</span>
+          <span class="cf-tag">research</span>
+          <span class="cf-tag">automation</span>
+          <span class="cf-tag">embedded</span>
+        </div>
+        <div class="cf-hero-cta">
+          <a href="#contact" class="cf-btn cf-btn-primary">
+            <span>›</span>
+            Get in touch
+          </a>
+          <a href="#founders" class="cf-btn cf-btn-secondary">About Us</a>
+        </div>
+      </div>
+      <div class="cf-terminal">
+        <div class="cf-terminal-bar">
+          <span class="cf-terminal-dot"></span>
+          <span class="cf-terminal-dot"></span>
+          <span class="cf-terminal-dot"></span>
+          <span class="cf-terminal-title">~/codeforge</span>
+        </div>
+        <div class="cf-terminal-body">
+          <div><span style="color: var(--accent);">›</span> <span style="color: #737373;">founders</span></div>
+          <div style="color: #EDEDED;">Alex Hansson&nbsp; ·&nbsp; Marco Trentini</div>
+          <div style="margin-top: 10px;"><span style="color: var(--accent);">›</span> <span style="color: #737373;">focus</span></div>
+          <div style="color: #EDEDED;">custom software · automation · AI · research</div>
+          <div style="margin-top: 10px;"><span style="color: var(--accent);">›</span> <span style="color: #737373;">based</span></div>
+          <div style="color: #EDEDED;">Zürich, Switzerland<span class="cf-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CAPABILITIES -->
+  <section id="capabilities" class="cf-section-wrap">
+    <div class="cf-section">
+      <div class="cf-section-label">// capabilities</div>
+      <h2>What we build</h2>
+      <p class="cf-section-desc">We're engineers and scientists. We build custom software tailored to how your team works — and bring research-grade rigour to the problems that don't have an off-the-shelf answer.</p>
+      <div class="cf-grid2">
+        <div class="cf-card">
+          <div class="cf-card-eyebrow">01</div>
+          <div class="cf-card-title">Custom tools &amp; software</div>
+          <div class="cf-card-body">Tools and applications shaped around your processes — Stay in the loop as we build end to end, from first prototype to polished application.</div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-eyebrow">02</div>
+          <div class="cf-card-title">AI &amp; computer vision</div>
+          <div class="cf-card-body">Machine learning and computer vision integrated into your products and processes.</div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-eyebrow">03</div>
+          <div class="cf-card-title">Backend &amp; data</div>
+          <div class="cf-card-body">APIs, databases and server-side services. Microservice and node architectures, clean, concise and containerised.</div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-eyebrow">04</div>
+          <div class="cf-card-title">Embedded &amp; hardware</div>
+          <div class="cf-card-body">When a product reaches into the physical world we're here for your firmware, drivers and sensor integration.</div>
+        </div>
+        <div class="cf-research-card">
+          <div class="cf-research-eyebrow">05 · research</div>
+          <div class="cf-research-body">
+            <div class="cf-research-title">Research &amp; scientific computing</div>
+            <p class="cf-research-desc">Both of us come from research backgrounds. We can take on the open-ended, scientific side of a project — methods, prototyping, simulation and evaluation — and turn it into software that holds up.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack" class="cf-section-wrap">
+    <div class="cf-section">
+      <div class="cf-section-label">// stack</div>
+      <h2>Languages &amp; tools</h2>
+      <p class="cf-section-desc">The languages, frameworks and concepts we reach for — we pick the right one for the job rather than the other way around.</p>
+      <div class="cf-stack-grid">
+        <div>
+          <div class="cf-stack-label">languages &amp; frameworks</div>
+          <div class="cf-tag-cloud">
+            <span class="cf-tag">Python</span>
+            <span class="cf-tag">C</span>
+            <span class="cf-tag">C++</span>
+            <span class="cf-tag">TypeScript</span>
+            <span class="cf-tag">JavaScript</span>
+            <span class="cf-tag">Java</span>
+            <span class="cf-tag">Ruby</span>
+            <span class="cf-tag">MATLAB</span>
+            <span class="cf-tag">Simulink</span>
+            <span class="cf-tag">React</span>
+            <span class="cf-tag">React&nbsp;Native</span>
+            <span class="cf-tag">Vue.js</span>
+            <span class="cf-tag">Node.js</span>
+            <span class="cf-tag">SQL</span>
+            <span class="cf-tag">bash</span>
+            <span class="cf-tag">HTML&nbsp;/&nbsp;CSS</span>
+            <span class="cf-tag">LaTeX</span>
+            <span class="cf-tag">and more...</span>
+          </div>
+        </div>
+        <div>
+          <div class="cf-stack-label">tools &amp; concepts</div>
+          <div class="cf-tag-cloud">
+            <span class="cf-tag">machine&nbsp;learning</span>
+            <span class="cf-tag">deep&nbsp;learning</span>
+            <span class="cf-tag">computer&nbsp;vision</span>
+            <span class="cf-tag">PyTorch</span>
+            <span class="cf-tag">TensorFlow</span>
+            <span class="cf-tag">Docker</span>
+            <span class="cf-tag">Linux</span>
+            <span class="cf-tag">Git</span>
+            <span class="cf-tag">REST&nbsp;APIs</span>
+            <span class="cf-tag">microservices</span>
+            <span class="cf-tag">ROS&nbsp;2</span>
+            <span class="cf-tag">reinforcement&nbsp;learning</span>
+            <span class="cf-tag">prompt&nbsp;engineering</span>
+            <span class="cf-tag">scikit-learn</span>
+            <span class="cf-tag">Keras</span>
+            <span class="cf-tag">perception</span>
+            <span class="cf-tag">motion&nbsp;planning</span>
+            <span class="cf-tag">control&nbsp;systems</span>
+            <span class="cf-tag">simulation</span>
+            <span class="cf-tag">CMake</span>
+            <span class="cf-tag">CAN&nbsp;/&nbsp;SPI&nbsp;/&nbsp;I2C</span>
+            <span class="cf-tag">STM32</span>
+            <span class="cf-tag">Raspberry&nbsp;Pi</span>
+            <span class="cf-tag">PCB&nbsp;design</span>
+            <span class="cf-tag">MPC</span>
+            <span class="cf-tag">state&nbsp;estimation&nbsp;/&nbsp;EKF</span>
+            <span class="cf-tag">robot&nbsp;dynamics</span>
+            <span class="cf-tag">graph&nbsp;neural&nbsp;networks</span>
+            <span class="cf-tag">Arduino</span>
+            <span class="cf-tag">Teensy</span>
+            <span class="cf-tag">KiCAD</span>
+            <span class="cf-tag">PlatformIO</span>
+            <span class="cf-tag">3D&nbsp;printing</span>
+            <span class="cf-tag">CAD</span>
+            <span class="cf-tag">MoveIt!</span>
+            <span class="cf-tag">NVIDIA&nbsp;Isaac&nbsp;Gym</span>
+            <span class="cf-tag">and more...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDERS -->
+  <section id="founders" class="cf-section-wrap">
+    <div class="cf-section">
+      <div class="cf-section-label">// founders</div>
+      <h2>Two engineers</h2>
+      <div class="cf-grid2">
+
+        <!-- MARCO -->
+        <div class="cf-founder-card">
+          <div class="cf-founder-head">
+            <img src="assets/marco.jpg" alt="Marco Trentini" class="cf-founder-img">
+            <div>
+              <div class="cf-founder-name">Marco Trentini</div>
+              <div class="cf-founder-role">software &amp; embedded engineer · M.Sc. ETH Zürich</div>
+            </div>
+          </div>
+          <p class="cf-founder-bio">Spacecraft avionics research engineer at ETH's Robotic Systems Lab — at home in C and C++ firmware on the metal and in Python as well as the tooling above it.</p>
+          <div class="cf-founder-tags">
+            <span class="cf-tag">C&nbsp;/&nbsp;C++</span>
+            <span class="cf-tag">Python</span>
+            <span class="cf-tag">Embedded</span>
+            <span class="cf-tag">Full Stack WebDev</span>
+          </div>
+          <div class="cf-founder-section">
+            <div class="cf-founder-section-label">TRUSTED BY</div>
+            <div class="cf-trusted-by">
+              <span style="display: inline-flex; align-items: baseline; gap: 6px;">
+                <span style="font-weight: 800; letter-spacing: 0.1em; font-size: 16px;">NASA</span>
+                <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--text-3);">JPL</span>
+              </span>
+              <span style="font-size: 16px; letter-spacing: -0.01em;">
+                <span style="font-weight: 800;">ETH</span><span style="font-weight: 400; color: var(--text-3);">zürich</span>
+              </span>
+              <span style="font-size: 16px;">
+                <span style="font-weight: 800;">ANY</span><span style="font-weight: 400; color: var(--text-3);">botics</span>
+              </span>
+            </div>
+          </div>
+          <div class="cf-founder-section">
+            <div class="cf-founder-section-label">OFF THE CLOCK</div>
+            <p class="cf-founder-note">Licensed aircraft pilot, divemaster and maker — 3D printing, electronics and the occasional oldtimer engine rebuild.</p>
+          </div>
+        </div>
+
+        <!-- ALEX -->
+        <div class="cf-founder-card">
+          <div class="cf-founder-head">
+            <img src="assets/alex.jpg" alt="Alexander Hansson" class="cf-founder-img" style="object-position: center 30%;">
+            <div>
+              <div class="cf-founder-name">Alexander Hansson</div>
+              <div class="cf-founder-role">software &amp; AI engineer · PhD Candidate, ETH Zürich</div>
+            </div>
+          </div>
+          <p class="cf-founder-bio">Robotics PhD candidate at ETH's Mobile Robotics Lab researching AI, perception and control. Brings research-grade machine learning, computer vision and control onto hardware.</p>
+          <div class="cf-founder-tags">
+            <span class="cf-tag">C / C++</span>
+            <span class="cf-tag">Python</span>
+            <span class="cf-tag">Control Systems</span>
+            <span class="cf-tag">Computer Vision</span>
+          </div>
+          <div class="cf-founder-section">
+            <div class="cf-founder-section-label">TRUSTED BY</div>
+            <div class="cf-trusted-by">
+              <span style="display: inline-flex; align-items: baseline; gap: 6px;">
+                <span style="font-weight: 800; letter-spacing: 0.1em; font-size: 16px;">NASA</span>
+                <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--text-3);">JPL</span>
+              </span>
+              <span style="font-size: 16px; letter-spacing: -0.01em;">
+                <span style="font-weight: 800;">ETH</span><span style="font-weight: 400; color: var(--text-3);">zürich</span>
+              </span>
+              <span style="font-weight: 800; letter-spacing: 0.04em; font-size: 16px;">ABB</span>
+            </div>
+          </div>
+          <div class="cf-founder-section">
+            <div class="cf-founder-section-label">OFF THE CLOCK</div>
+            <p class="cf-founder-note">Off the clock doesn't really exist — research doesn't wait. The rest of his time goes to the gym and, above all, family.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="cf-section">
+      <div class="cf-section-label">// contact</div>
+      <h2>Get in touch</h2>
+      <div class="cf-contact-grid">
+        <a class="cf-contact-main" id="mailHello" href="#">
+          <span>
+            <span class="cf-contact-name">Reach the both of us</span>
+            <span class="cf-contact-email" id="emailHello"></span>
+          </span>
+          <span class="cf-contact-arrow" style="font-size: 20px;">›</span>
+        </a>
+        <a class="cf-contact-item" id="mailMarco" href="#">
+          <span>
+            <span class="cf-contact-name">Marco Trentini</span>
+            <span class="cf-contact-email" id="emailMarco"></span>
+          </span>
+          <span class="cf-contact-arrow" style="font-size: 18px;">›</span>
+        </a>
+        <a class="cf-contact-item" id="mailAlex" href="#">
+          <span>
+            <span class="cf-contact-name">Alexander Hansson</span>
+            <span class="cf-contact-email" id="emailAlex"></span>
+          </span>
+          <span class="cf-contact-arrow" style="font-size: 18px;">›</span>
+        </a>
+      </div>
+    </div>
+    <div class="cf-footer">
+      <div class="cf-footinner">
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 13px; color: var(--text-3);">
+          <span style="color: var(--accent);">›</span>codeForge
+        </span>
+        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-4);">Zürich, Switzerland</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Theme toggle — follows system preference until user overrides
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var mq = window.matchMedia('(prefers-color-scheme: light)');
+      var manual = false;
+      var theme = mq.matches ? 'light' : 'dark';
+
+      function apply(t) {
+        theme = t;
+        root.setAttribute('data-theme', t);
+        label.textContent = t === 'light' ? 'dark' : 'light';
+      }
+      apply(theme);
+
+      mq.addEventListener('change', function (e) {
+        if (!manual) apply(e.matches ? 'light' : 'dark');
+      });
+      btn.addEventListener('click', function () {
+        manual = true;
+        apply(theme === 'light' ? 'dark' : 'light');
+      });
+    })();
+
+    // Email links — assembled at runtime so no plaintext address in source
+    (function () {
+      var d = 'codeforge' + '.' + 'ch';
+      var at = String.fromCharCode(64);
+      function wire(linkId, spanId, user) {
+        var link = document.getElementById(linkId);
+        var span = document.getElementById(spanId);
+        var addr = user + at + d;
+        if (span) span.textContent = addr;
+        if (link) link.addEventListener('click', function (e) {
+          e.preventDefault();
+          window.location.href = 'mailto:' + addr;
+        });
+      }
+      wire('mailHello', 'emailHello', 'hello');
+      wire('mailMarco', 'emailMarco', 'marco');
+      wire('mailAlex', 'emailAlex', 'alex');
+    })();
+  </script>
+</body>
+</html>
